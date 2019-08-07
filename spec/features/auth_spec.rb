@@ -38,8 +38,22 @@ feature 'logging in' do
 end
 
 feature 'logging out' do
-  scenario 'begins with a logged out state'
+  before(:each) do
+    visit new_session_url
+    test = User.create(username: "testing@email.com", password: "biscuits")
+    fill_in 'username', :with => "testing@email.com"
+    fill_in 'password', :with => "biscuits"
+    click_on "Sign In"
+    click_on "Sign Out"
+  end
+  
+  scenario 'begins with a logged out state' do
+    expect(page).to have_content "Sign In"
+  end
 
-  scenario 'doesn\'t show username on the homepage after logout'
+  scenario 'doesn\'t show username on the homepage after logout' do
+    expect(page).to_not have_content "testing@email.com"
+
+  end
 
 end
